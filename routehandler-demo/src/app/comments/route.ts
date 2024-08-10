@@ -1,0 +1,36 @@
+import { NextRequest, NextResponse } from 'next/server';
+import {comments} from "./data"
+
+            // -----QUERY selecter method----
+            export async function GET(request: NextRequest) {
+              const searchParams = request.nextUrl.searchParams;
+              const query = searchParams.get('query');
+            
+              console.log('Query Parameter:', query);
+            
+              // You can perform actions based on the query parameter value
+              const responseMessage = query
+                ?   comments.filter(
+                    (comment) => comment.text.toLowerCase().includes(query.toLowerCase())
+                ) : comments ;
+            
+              return NextResponse.json(responseMessage);
+            }
+            
+
+        // ----POST request handler---
+export async function  POST(request:Request){
+const comment = await request.json();
+const newComment={
+    id:comments.length +1,
+    text:comment.text
+};
+comments.push(newComment);
+return new Response(JSON.stringify(newComment),{
+    headers:{
+        "Content-Type":"application/json"
+    },
+    status:201,
+});
+
+}
